@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<h2>{{ the_title }}</h2>
+
+<form action="/search4" method="POST" accept-charset="utf-8">
+<table>
+<p>Введите данный для поиска:</p>
+<tr><td>Фраза:</td><td><input name='phrase' type='TEXT' width='60'></td></tr>
+<tr><td>Буквы:</td><td><input name='letters' type='TEXT' value='аоуыэи'></td></tr>
+</table>
+<p>Если готовы, нажмите кнопку "Поиск":</p>
+<p><input value='Поиск' type='SUBMIT'></p>
+</form>
+<a href="viewlog">смотреть лог</a>
+{% endblock %}

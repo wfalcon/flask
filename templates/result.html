@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<h2>{{ the_title }}</h2>
+
+<p>Вы отправляете следующие данные:</p>
+<table>
+<tr><td>Фраза:</td><td>{{ the_phrase }}</td></tr>
+<tr><td>Буквы:</td><td>{{ the_letters }}</td></tr>
+</table>
+
+<p>Во фразе <b>"{{ the_phrase}}"</b> из заданный букв <b>"{{ the_letters }}"</b>, пристутствуют:</p>
+<h3>{{ the_results }}</h3>
+<a href="/">на главную</a>
+{% endblock %}
