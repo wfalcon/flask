@@ -15,4 +15,3 @@ class UserDatabase:
 		self.cursor.close()
 		self.conn.close()
 		
-		
