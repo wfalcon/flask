@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request, redirect, escape, session
 from vsearch import search4letters
 from DBcm import UserDatabase, ConnectionError, CredentialsError
-from config import dbconfig
+from config import dbconfig, secret_key
 from checker import check_logged_in
 
 app = Flask(__name__)
 app.config['dbconfig'] = dbconfig
-app.secret_key='GkvIyvhuYTggritRffUTytrutYty'
+app.secret_key = secret_key
 
 
 @app.route('/')
