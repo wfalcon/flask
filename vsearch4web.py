@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, escape, session
 from vsearch import search4letters
-from DBcm import UserDatabase
+from DBcm import UserDatabase, ConnectionError, CredentialsError
 from config import dbconfig
 from checker import check_logged_in
 
@@ -36,23 +36,37 @@ def do_search() -> str:
 		results = ' '.join(result)
 	else:
 		results = 'Не найдено'
-	log_request(request, results)
+
+	try:
+		log_request(request, results)
+	except Exception as err:
+		print('*****Ошибка подключения к БД:  ', str(err))
+
 	return render_template('result.html', the_title = title,
 		the_phrase = phrase, the_letters = letters,
 		the_results = results,)
+	
 
 @app.route('/viewlog')
 @check_logged_in
 def view_log() -> 'html':
-	with UserDatabase(app.config['dbconfig']) as cursor:
-		_SQL = """ select * from log """
-		cursor.execute(_SQL)
-		contents = cursor.fetchall()
-	titles = ('№п.п.', 'Дата и время', 'Фраза', 'Буквы', 'Адрес источника', 'Браузер', 'Результат')	
-	return render_template('viewlog.html', the_title = 'Просмотр лога',
-							the_row_titles = titles,
-							the_data = contents,)
-
+	try:
+		with UserDatabase(app.config['dbconfig']) as cursor:
+			_SQL = """ select * from log """
+			cursor.execute(_SQL)
+			contents = cursor.fetchall()
+		titles = ('№п.п.', 'Дата и время', 'Фраза', 'Буквы', 'Адрес источника', 'Браузер', 'Результат')	
+		return render_template('viewlog.html', the_title = 'Просмотр лога',
+								the_row_titles = titles,
+								the_data = contents,)
+	except ConnectionError as err:
+		print('Ваша БД включена? Ошибка: ',str(err))
+	except CredentialsError as err:
+		print('Логин или пароль не верный. Ошибка:', str(err))
+	except SQLError as err:
+		print('Не корректный запрос? Ошибка:', str(err))
+	except Exception as err:
+		print('Что-то пошло не так:', str(err))
 
 @app.route('/login')
 def do_login() -> str:
@@ -71,4 +85,4 @@ def do_logout() -> str:
 
 if __name__=='__main__':
 	
-	app.run(port=80, debug=True)
+	app.run(port=80, debug=False)
